@@ -13,12 +13,5 @@
             "name": "moawiaab",
             "email": "moawiaab@gmail.com"
         }
-    ],
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Moawiaab\\QTheme\\QThemeServiceProvider"
-            ]
-        }
-    }
+    ]
 }

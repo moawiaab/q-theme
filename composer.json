@@ -20,7 +20,5 @@
                 "Moawiaab\\QTheme\\QThemeServiceProvider"
             ]
         }
-    },
-    "minimum-stability": "dev",
-    "require": {}
+    }
 }

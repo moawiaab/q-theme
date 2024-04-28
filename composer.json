@@ -1,7 +1,7 @@
 {
     "name": "moawiaab/q-theme",
     "description": "quaser theme for Jetstream and laravel 11",
-    "type": "library",
+    "type": "composer-plugin",
     "license": "MIT",
     "autoload": {
         "psr-4": {

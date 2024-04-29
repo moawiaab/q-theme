@@ -3,7 +3,6 @@
 namespace Moawiaab\QTheme\Models;
 
 
-use App\Models\Permission;
 use App\Models\User;
 use \DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

@@ -32,11 +32,12 @@ class QThemeServiceProvider extends ServiceProvider
             __DIR__ . '/../database/seeders/' => database_path('seeders')
         ], 'role-migrations');
 
-        copy(__DIR__.'/Models/User.php', app_path('Models/User.php'));
-        copy(__DIR__.'/../database/seeders/DatabaseSeeder.php', app_path('../database/seeders/DatabaseSeeder.php'));
+        copy(__DIR__ . '/Models/User.php', app_path('Models/User.php'));
+        copy(__DIR__ . '/../database/seeders/DatabaseSeeder.php', app_path('../database/seeders/DatabaseSeeder.php'));
+        copy(__DIR__ . '/Http/Middleware/HandleInertiaRequests.php', app_path('Http/Middleware/HandleInertiaRequests.php'));
     }
 
-        /**
+    /**
      * Configure the commands offered by the application.
      *
      * @return void

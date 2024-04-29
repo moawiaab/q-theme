@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Models;
+namespace Moawiaab\QTheme\Models;
 
-use App\Support\HasAdvancedFilter;
+
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Moawiaab\QTheme\Support\HasAdvancedFilter;
 
 class Account extends Model
 {
@@ -39,42 +40,18 @@ class Account extends Model
         'details',
     ];
 
-    public function users(): HasMany
-    {
-        return $this->hasMany(User::class);
-    }
 
     public function roles(): HasMany
     {
         return $this->hasMany(Role::class);
     }
 
-    public function budgets(): HasMany
-    {
-        return $this->hasMany(Budget::class);
-    }
 
-    public function expanses(): HasMany
-    {
-        return $this->hasMany(Expanse::class);
-    }
-    public function stages(): HasMany
-    {
-        return $this->hasMany(Stage::class);
-    }
+
     protected function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');
     }
 
-    public function locker()
-    {
-        return $this->hasOne(PublicTreasury::class);
-    }
-
-    public function setting()
-    {
-        return $this->hasOne(Setting::class)->first();
-    }
 
 }

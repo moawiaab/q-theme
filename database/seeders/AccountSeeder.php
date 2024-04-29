@@ -2,13 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Account;
-use App\Models\GroupAccount;
-use App\Models\PublicTreasury;
-use App\Models\Role;
+
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Moawiaab\QTheme\Models\Account;
+use Moawiaab\QTheme\Models\Role;
 
 class AccountSeeder extends Seeder
 {

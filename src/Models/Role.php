@@ -6,10 +6,10 @@ namespace Moawiaab\QTheme\Models;
 use App\Models\Permission;
 use App\Models\User;
 use \DateTimeInterface;
-use App\Support\HasAdvancedFilter;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Moawiaab\QTheme\Support\HasAdvancedFilter;
 
 class Role extends Model
 {

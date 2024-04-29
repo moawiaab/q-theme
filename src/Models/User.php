@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use \DateTimeInterface;
-use App\Support\HasAdvancedFilter;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -13,6 +11,9 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use Moawiaab\QTheme\Models\Account;
+use Moawiaab\QTheme\Models\Role;
+use Moawiaab\QTheme\Support\HasAdvancedFilter;
 
 class User extends Authenticatable
 {
@@ -121,10 +122,7 @@ class User extends Authenticatable
         return $this->belongsTo(Account::class);
     }
 
-    public function locker()
-    {
-        return $this->hasOne(PrivateLocker::class);
-    }
+
 
     protected function serializeDate(DateTimeInterface $date)
     {

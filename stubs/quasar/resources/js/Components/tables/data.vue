@@ -410,7 +410,7 @@ import TableIcon from "@/Components/Widgets/TableIcon.vue";
 import PaginationPage from "@/Components/pagination.vue";
 import { useTables } from "@/stores/tables/index";
 import { watch, onMounted, ref } from "vue";
-import exportFile from "quasar/src/utils/export-file.js";
+import exportFile from "quasar/src/utils/export-file/export-file";
 import useQuasar from "quasar/src/composables/use-quasar.js";
 import { useAuth } from "@/stores/auth/index";
 import { router, Link } from "@inertiajs/vue3";

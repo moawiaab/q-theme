@@ -361,8 +361,9 @@
 <script setup>
 import { useTables } from "../../stores/tables/index";
 import { watch, computed, onMounted, ref } from "vue";
-import exportFile from "quasar/src/utils/export-file.js";
-import useQuasar from "quasar/src/Composable/use-quasar.js";
+
+import exportFile from "quasar/src/utils/export-file/export-file";
+import useQuasar from "quasar/src/composables/use-quasar/use-quasar";
 import { useAuth } from "@/stores/auth/index";
 
 const table = useTables();

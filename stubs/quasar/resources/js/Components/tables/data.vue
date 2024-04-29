@@ -411,7 +411,7 @@ import PaginationPage from "@/Components/pagination.vue";
 import { useTables } from "@/stores/tables/index";
 import { watch, onMounted, ref } from "vue";
 import exportFile from "quasar/src/utils/export-file/export-file";
-import useQuasar from "quasar/src/composables/use-quasar.js";
+import useQuasar from "quasar/src/composables/use-quasar/use-quasar";
 import { useAuth } from "@/stores/auth/index";
 import { router, Link } from "@inertiajs/vue3";
 

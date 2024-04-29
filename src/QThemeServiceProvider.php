@@ -23,6 +23,17 @@ class QThemeServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
         $this->configureCommands();
+
+        $this->publishes([
+            __DIR__ . '/../database/migrations/' => database_path('migrations')
+        ], 'role-migrations');
+
+        $this->publishes([
+            __DIR__ . '/../database/seeders/' => database_path('seeders')
+        ], 'role-migrations');
+
+        copy(__DIR__.'/Models/User.php', app_path('Models/User.php'));
+        copy(__DIR__.'/../database/seeders/DatabaseSeeder.php', app_path('../database/seeders/DatabaseSeeder.php'));
     }
 
         /**

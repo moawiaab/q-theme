@@ -70,7 +70,6 @@ class InstallCommand extends Command implements PromptsForMissingInput
                     "pinia-plugin-persistedstate" => "^3.2.1",
                     "vue-i18n" => "^9.12.1",
                     "vue-chartjs" => "^5.2.0",
-                    "nanoid" => "^4.0.2",
                     "chart.js" => "^4.3.3",
                 ] + $packages;
             }, false);

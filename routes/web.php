@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Moawiaab\QTheme\Http\Controllers\AccountController;
+use Moawiaab\QTheme\Http\Controllers\DevelopmentController;
 use Moawiaab\QTheme\Http\Controllers\PermissionController;
 use Moawiaab\QTheme\Http\Controllers\RoleController;
 use Moawiaab\QTheme\Http\Controllers\UserController;
@@ -40,5 +41,7 @@ Route::middleware([
 
     Route::resource("/permissions", PermissionController::class);
     Route::put('/permissions/{permission}/restore', [PermissionController::class, "restore"])->name('restore');
+
+    Route::get('/development', [DevelopmentController::class, "index"])->name('development.index');
 
 });

@@ -1,12 +1,11 @@
 <?php
 
-use App\Http\Controllers\AccountController;
-use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\UserController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Moawiaab\QTheme\Http\Controllers\AccountController;
+use Moawiaab\QTheme\Http\Controllers\PermissionController;
+use Moawiaab\QTheme\Http\Controllers\RoleController;
+use Moawiaab\QTheme\Http\Controllers\UserController;
 
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [

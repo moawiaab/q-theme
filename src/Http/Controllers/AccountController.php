@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Moawiaab\QTheme\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AccountRequest;
-use App\Http\Requests\UpdateAccountRequest;
-use App\Http\Resources\Admin\AccountResource;
-use App\Models\Account;
+use Moawiaab\QTheme\Http\Requests\AccountRequest;
+use Moawiaab\QTheme\Http\Requests\UpdateAccountRequest;
+use Moawiaab\QTheme\Http\Resources\Admin\AccountResource;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 use Inertia\Inertia;
+use Moawiaab\QTheme\Models\Account;
 
 class AccountController extends Controller
 {

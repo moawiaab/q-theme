@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Moawiaab\QTheme\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StorePermissionRequest;
-use App\Http\Requests\UpdatePermissionRequest;
-use App\Http\Resources\Admin\PermissionResource;
-use App\Models\Permission;
+use Moawiaab\QTheme\Http\Requests\StorePermissionRequest;
+use Moawiaab\QTheme\Http\Requests\UpdatePermissionRequest;
+use Moawiaab\QTheme\Http\Resources\Admin\PermissionResource;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 use Inertia\Inertia;
+use Moawiaab\QTheme\Models\Permission;
 
 class PermissionController extends Controller
 {

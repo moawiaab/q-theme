@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace Moawiaab\QTheme\Http\Requests;
 
 use App\Models\User;
 use Gate;

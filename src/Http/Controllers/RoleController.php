@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Moawiaab\QTheme\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreRoleRequest;
-use App\Http\Requests\UpdateRoleRequest;
-use App\Http\Resources\Admin\RoleResource;
-use App\Models\Account;
-use App\Models\Permission;
-use App\Models\Role;
-use Illuminate\Http\Request;
+use Moawiaab\QTheme\Http\Requests\StoreRoleRequest;
+use Moawiaab\QTheme\Http\Requests\UpdateRoleRequest;
+use Moawiaab\QTheme\Http\Resources\Admin\RoleResource;
+
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 use Inertia\Inertia;
+use Moawiaab\QTheme\Models\Account;
+use Moawiaab\QTheme\Models\Permission;
+use Moawiaab\QTheme\Models\Role;
 
 class RoleController extends Controller
 {

@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Moawiaab\QTheme\Http\Controllers;
 
-use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UpdateUserRequest;
-use App\Http\Resources\Admin\UserResource;
-use App\Models\Account;
+use App\Http\Controllers\Controller;
+use Moawiaab\QTheme\Http\Requests\StoreUserRequest;
+use Moawiaab\QTheme\Http\Requests\UpdateUserRequest;
+use Moawiaab\QTheme\Http\Resources\Admin\UserResource;
+use Moawiaab\QTheme\Models\Account;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;

@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Http\Requests;
+namespace Moawiaab\QTheme\Http\Requests;
 
-use App\Models\Permission;
 use Gate;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Gate as FacadesGate;
 
 class UpdatePermissionRequest extends FormRequest
 {
     public function authorize()
     {
-        return Gate::allows('permission_edit');
+        return FacadesGate::allows('permission_edit');
     }
 
     public function rules()

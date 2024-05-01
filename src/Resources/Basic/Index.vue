@@ -17,7 +17,7 @@ defineProps({
         <loading v-if="users" />
         <h-title :title="$t('input.user.title')" />
         <data-table
-            :columns="Users"
+            :columns="UsersColumn"
             :rows="users"
             url="users"
             viewable

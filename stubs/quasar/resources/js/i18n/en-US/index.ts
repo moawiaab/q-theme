@@ -138,7 +138,8 @@ export default {
         profile : {
             t1 : "Profile Information",
             d1 : "Update your account's profile information and email address."
-        }
+        },
+        //don`t remove this lint
     },
     g: {
         done: "Ratification",
@@ -513,6 +514,7 @@ export default {
         report1: "User transaction report",
         report2: " Earnings report",
         setting: "Settings",
+         //don`t remove this item
     },
     w: {
         users: "Users Count",

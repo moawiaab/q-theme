@@ -67,6 +67,6 @@ const items = [
             },
         ],
     },
-
+//don`t remove this lint
 ];
 </script>

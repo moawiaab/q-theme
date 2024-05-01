@@ -3,13 +3,8 @@
 namespace Moawiaab\QTheme\Services;
 
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
-
-
 class FileService
 {
-
-
     public static function allFiles($path, $continueText = "Controller")
     {
         $files = File::allFiles($path);
@@ -31,25 +26,12 @@ class FileService
         file_put_contents($path, str_replace($search, $replace, file_get_contents($path)));
     }
 
-    public static function fillable($after, $name,$group = "web")
+    public static function editFile($path, $text)
     {
-        $httpKernel = file_get_contents(app_path('Http/Kernel.php'));
-
-        $middlewareGroups = Str::before(Str::after($httpKernel, 'protected $fillable = ['), '];');
-        $middlewareGroup = Str::before(Str::after($middlewareGroups, "'$group' => ["), '],');
-
-        if (!Str::contains($middlewareGroup, $name)) {
-            $modifiedMiddlewareGroup = str_replace(
-                $after . ',',
-                $after . ',' . PHP_EOL . '            ' . $name . ',',
-                $middlewareGroup,
-            );
-
-            file_put_contents(app_path('Http/Kernel.php'), str_replace(
-                $middlewareGroups,
-                str_replace($middlewareGroup, $modifiedMiddlewareGroup, $middlewareGroups),
-                $httpKernel
-            ));
-        }
+        $file = fopen($path, 'a');
+        fwrite($file, $text);
+        fclose($file);
     }
+
+
 }

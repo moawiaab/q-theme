@@ -126,7 +126,8 @@ export default {
         profile : {
             t1 : "معلومات الملف الشخصي",
             d1 : "قم بتحديث معلومات الملف الشخصي لحسابك وعنوان البريد الإلكتروني."
-        }
+        },
+        //don`t remove this lint
     },
     g: {
         done: "تصديق",
@@ -498,6 +499,7 @@ export default {
         report1: "تقرير معاملات المستخدمين",
         report2: "تقرير الارباح",
         setting: "الإعدادات",
+         //don`t remove this item
     },
     w: {
         users: "عدد المستخدمين",

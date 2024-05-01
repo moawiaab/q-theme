@@ -44,4 +44,6 @@ Route::middleware([
 
     Route::get('/development', [DevelopmentController::class, "index"])->name('development.index');
 
+     //don`t remove this lint
+
 });

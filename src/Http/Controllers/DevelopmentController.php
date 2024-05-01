@@ -5,9 +5,13 @@ namespace Moawiaab\QTheme\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Artisan;
 use Inertia\Inertia;
+use Moawiaab\QTheme\Models\Permission;
+use Moawiaab\QTheme\Models\Role;
+use Moawiaab\QTheme\Services\DefaultText;
 use Moawiaab\QTheme\Services\FileService;
+use Moawiaab\QTheme\Services\InstallCommand;
 
 class DevelopmentController extends Controller
 {
@@ -29,26 +33,32 @@ class DevelopmentController extends Controller
 
     public function store(Request $request)
     {
-        $name = ucfirst(strtolower($request->controller));
+        // small name
+        $smallName = str_replace(' ', '', trim(strtolower($request->controller)));
+        $name = ucfirst($smallName);
         $controller = app_path('Http/Controllers/' . $name . 'Controller.php');
         $model = app_path('Models/' . $name . '.php');
         $resource = app_path('Http/Resources/' . $name . 'Resource.php');
         $storeR = app_path('Http/Requests/Store' . $name . 'Request.php');
         $updateR = app_path('Http/Requests/Update' . $name . 'Request.php');
         $view = resource_path('js/Pages/' . $name . 's/');
-        $col = fopen(resource_path('js/types/columns.ts'), 'a');
-
+        $menu = resource_path('js/Components/menu/ListMenu.vue');
+        $col = resource_path('js/types/columns.ts');
+        $ar = resource_path('js/i18n/ar/index.ts');
+        $en = resource_path('js/i18n/en-US/index.ts');
         $router = base_path('routes/web.php');
-
-
         $colName = $name . 'Column';
+        //migrations
+        $m_name = date("Y-m-d") . "_" . time() . "_" . "create_" . $smallName . "_table.php";
+        $migrate = database_path("migrations/". $m_name);
 
-        $text = "\n".'export const ' . $colName . ' = [
-        { name: "name", required: true, label: "input.role.name", align: "left", field: "title" },
-        { name: "created_at", label: "g.created_at", field: "created_at", align: "left", sortable: true },
-        { name: "options", label: "g.options", field: "options" }
-        ]';
+        copy(__DIR__ . '/../../Resources/database/basic.php', $migrate);
 
+        dd($m_name);
+        $this->setPermission(strtolower($name));
+        // dd("done");
+
+        // copy files from basic to new directory
         copy(__DIR__ . '/BasicController.php', $controller);
         copy(__DIR__ . '/../../Models/Basic.php', $model);
         copy(__DIR__ . '/../Resources/BasicResource.php', $resource);
@@ -56,36 +66,66 @@ class DevelopmentController extends Controller
         copy(__DIR__ . '/../Requests/UpdateBasicRequest.php', $updateR);
 
         if (file_exists($controller)) {
-            //model
+            //replace model name
             FileService::replaceInFile('Basic', $name, $model);
-            //resource
+            //replace resource name
             FileService::replaceInFile('BasicResource', $name . "Resource", $resource);
-            //request
+            //replace request name
             FileService::replaceInFile('StoreBasicRequest', 'Store' . $name . "Request", $storeR);
             FileService::replaceInFile('UpdateBasicRequest', 'Update' . $name . "Request", $updateR);
-            //controller
+            //replace controller name and method names
             FileService::replaceInFile('BasicController', $name . "Controller", $controller);
             FileService::replaceInFile('Basics/', $name . 's/', $controller);
-            FileService::replaceInFile('basics', strtolower($name . 's/'), $controller);
-            FileService::replaceInFile('$basic', '$' . strtolower($name), $controller);
+            FileService::replaceInFile('basics', $smallName . 's', $controller);
+            FileService::replaceInFile('$basic', '$' . $smallName, $controller);
             FileService::replaceInFile('Basic', $name, $controller);
-            // copy resources files
+            // copy resources files in vue folder
             (new Filesystem)->copyDirectory(__DIR__ . '/../../Resources/Basic', $view);
-            // index file
-
+            // views files index , create, update, show
             FileService::replaceInFile('UsersColumn', $colName, $view . '/Index.vue');
-            FileService::replaceInFile('user', strtolower($name), $view . '/Index.vue');
-            FileService::replaceInFile('user', strtolower($name), $view . '/Create.vue');
-            FileService::replaceInFile('user', strtolower($name), $view . '/Edit.vue');
-            FileService::replaceInFile('user', strtolower($name), $view . '/Show.vue');
+            FileService::replaceInFile('user', $smallName, $view . '/Index.vue');
+            FileService::replaceInFile('user', $smallName, $view . '/Create.vue');
+            FileService::replaceInFile('user', $smallName, $view . '/Edit.vue');
+            FileService::replaceInFile('user', $smallName, $view . '/Show.vue');
+
+            // add route to web page
+            FileService::replaceInFile('//don`t remove this lint', DefaultText::route($name), $router);
+            // add column to columns.ts
+            FileService::editFile($col, DefaultText::column($colName));
+            //add item to menu items
+            FileService::replaceInFile('//don`t remove this lint', DefaultText::menu($smallName), $menu);
+
+            // add lang to ar and en
+
+            FileService::replaceInFile('//don`t remove this item', DefaultText::langItem($name), $ar);
+            FileService::replaceInFile('//don`t remove this lint', DefaultText::lang($name), $ar);
+            FileService::replaceInFile('//don`t remove this item', DefaultText::langItem($name), $en);
+            FileService::replaceInFile('//don`t remove this lint', DefaultText::lang($name), $en);
+
+            // replace table name
+            FileService::replaceInFile('basics', $smallName. "s", $migrate);
 
 
-            $route = $name . 's';
-            $co = 'Route::resource("'.$route.'", App\Http\Controllers\\'.$name.'Controller::class); '."\n".' //don`t remove this lint';
-            FileService::replaceInFile('//don`t remove this lint',$co, $router);
-            fwrite($col, $text);
-            fclose($col);
         }
         // dd($name);
+    }
+
+
+    private function setPermission($name)
+    {
+        $data = [
+            ['details' => " access " .   $name, 'title' => $name . "_access"],
+            ['details' => " create " .  $name, 'title' => $name . "_create"],
+            ['details' => " edit " .  $name, 'title' => $name . "_edit"],
+            ['details' => " delete " .    $name, 'title' => $name . "_delete"]
+        ];
+        $role = Role::find(1);
+        $permission = Permission::insert($data);
+        if ($permission) {
+            $permissions = Permission::orderBy('id', 'desc')->take(4)->get(['id', 'title']);
+            foreach ($permissions as $key) {
+                $role->permissions()->syncWithoutDetaching($key->id);
+            }
+        }
     }
 }

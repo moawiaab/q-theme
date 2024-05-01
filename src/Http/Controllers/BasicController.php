@@ -41,7 +41,7 @@ class BasicController extends Controller
      */
     public function store(StoreBasicRequest $request)
     {
-        $data = ['basic_id' => auth()->id()];
+        $data = ['user_id' => auth()->id(), 'account_id' => auth()->user()->account_id];
 
         Basic::create($request->validated() + $data);
 

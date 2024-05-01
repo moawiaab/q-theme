@@ -15,6 +15,8 @@ class Basic extends Model
     use HasAdvancedFilter;
 
 
+    protected $table = 'tablesName';
+
     protected $orderable = [
         'id',
         'name',
@@ -34,6 +36,9 @@ class Basic extends Model
     ];
 
     protected $fillable = [
+        'name',
+        'user_id',
+        'account_id',
         'created_at',
         'updated_at',
     ];

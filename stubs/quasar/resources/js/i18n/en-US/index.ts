@@ -510,7 +510,7 @@ export default {
         user: "Users",
         role: "Roles",
         permission: "Permissions",
-        material: "Materials",
+        development: "Development",
         report1: "User transaction report",
         report2: " Earnings report",
         setting: "Settings",

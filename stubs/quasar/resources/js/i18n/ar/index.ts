@@ -495,7 +495,7 @@ export default {
         user: "المستخدمين",
         role: "الصلاحيات",
         permission: "الأذونات",
-        material: "الدورات التدريبية",
+        development: "Development",
         report1: "تقرير معاملات المستخدمين",
         report2: "تقرير الارباح",
         setting: "الإعدادات",

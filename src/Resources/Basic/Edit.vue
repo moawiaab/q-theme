@@ -21,7 +21,7 @@
                                     clearable
                                     filled
                                     v-model="form.name"
-                                    :label="$t('g.user_name')"
+                                    :label="$t('g.name')"
                                     lazy-rules
                                     :rules="[
                                         (val) => !!val || $t('v.required'),

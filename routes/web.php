@@ -43,6 +43,8 @@ Route::middleware([
     Route::put('/permissions/{permission}/restore', [PermissionController::class, "restore"])->name('restore');
 
     Route::get('/development', [DevelopmentController::class, "index"])->name('development.index');
+    Route::post('/development', [DevelopmentController::class, "store"])->name('development.store');
+
 
      //don`t remove this lint
 

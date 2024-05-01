@@ -54,7 +54,6 @@ class DevelopmentController extends Controller
 
         copy(__DIR__ . '/../../Resources/database/basic.php', $migrate);
 
-        dd($m_name);
         $this->setPermission(strtolower($name));
         // dd("done");
 
@@ -68,6 +67,7 @@ class DevelopmentController extends Controller
         if (file_exists($controller)) {
             //replace model name
             FileService::replaceInFile('Basic', $name, $model);
+            FileService::replaceInFile('tablesName', $smallName. "s", $model);
             //replace resource name
             FileService::replaceInFile('BasicResource', $name . "Resource", $resource);
             //replace request name

@@ -37,7 +37,13 @@ const items = [
         to: "dashboard",
         access: "dashboard",
     },
-
+    {
+        text: "item.development",
+        icon: "list",
+        to: "development.index",
+        access: "permission",
+        active: "permissions",
+    },
     {
         text: "item.user_management",
         icon: "mdi-account-cog-outline",

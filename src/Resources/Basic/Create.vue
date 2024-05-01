@@ -12,16 +12,7 @@
           <q-splitter v-model="setting.splitterModel" style="height: 100%">
             <template v-slot:before>
               <div class="q-pa-sm">
-                <q-input
-                  clearable
-                  filled
-                  v-model="form.name"
-                  :label="$t('g.name')"
-                  lazy-rules
-                  :rules="[(val) => !!val || $t('v.required')]"
-                  :error-message="form.errors.name"
-                  :error="form.errors.name ? true : false"
-                />
+               inputsItem
               </div>
             </template>
 

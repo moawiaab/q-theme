@@ -20,13 +20,11 @@ class Basic extends Model
     protected $orderable = [
         'id',
         'name',
-        'details'
     ];
 
     protected $filterable = [
         'id',
         'name',
-        'details'
     ];
 
     protected $dates = [

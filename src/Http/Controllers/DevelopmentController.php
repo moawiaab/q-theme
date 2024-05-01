@@ -5,13 +5,11 @@ namespace Moawiaab\QTheme\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
 use Inertia\Inertia;
 use Moawiaab\QTheme\Models\Permission;
 use Moawiaab\QTheme\Models\Role;
 use Moawiaab\QTheme\Services\DefaultText;
 use Moawiaab\QTheme\Services\FileService;
-use Moawiaab\QTheme\Services\InstallCommand;
 
 class DevelopmentController extends Controller
 {
@@ -35,7 +33,9 @@ class DevelopmentController extends Controller
     {
         // small name
         $smallName = str_replace(' ', '', trim(strtolower($request->controller)));
+        DefaultText::items($request->items, $smallName);
         $name = ucfirst($smallName);
+
         $controller = app_path('Http/Controllers/' . $name . 'Controller.php');
         $model = app_path('Models/' . $name . '.php');
         $resource = app_path('Http/Resources/' . $name . 'Resource.php');
@@ -50,7 +50,7 @@ class DevelopmentController extends Controller
         $colName = $name . 'Column';
         //migrations
         $m_name = date("Y-m-d") . "_" . time() . "_" . "create_" . $smallName . "_table.php";
-        $migrate = database_path("migrations/". $m_name);
+        $migrate = database_path("migrations/" . $m_name);
 
         copy(__DIR__ . '/../../Resources/database/basic.php', $migrate);
 
@@ -67,12 +67,17 @@ class DevelopmentController extends Controller
         if (file_exists($controller)) {
             //replace model name
             FileService::replaceInFile('Basic', $name, $model);
-            FileService::replaceInFile('tablesName', $smallName. "s", $model);
+            FileService::replaceInFile('tablesName', $smallName . "s", $model);
+            FileService::replaceInFile("'name',", DefaultText::$filedModel, $model);
+
             //replace resource name
             FileService::replaceInFile('BasicResource', $name . "Resource", $resource);
             //replace request name
             FileService::replaceInFile('StoreBasicRequest', 'Store' . $name . "Request", $storeR);
+            FileService::replaceInFile("'name' => [],", DefaultText::$filedRequire, $storeR);
             FileService::replaceInFile('UpdateBasicRequest', 'Update' . $name . "Request", $updateR);
+            FileService::replaceInFile("'name' => [],", DefaultText::$filedRequire, $updateR);
+
             //replace controller name and method names
             FileService::replaceInFile('BasicController', $name . "Controller", $controller);
             FileService::replaceInFile('Basics/', $name . 's/', $controller);
@@ -87,6 +92,10 @@ class DevelopmentController extends Controller
             FileService::replaceInFile('user', $smallName, $view . '/Create.vue');
             FileService::replaceInFile('user', $smallName, $view . '/Edit.vue');
             FileService::replaceInFile('user', $smallName, $view . '/Show.vue');
+            //set input to create and edit files
+            FileService::replaceInFile('inputsItem', DefaultText::$inputItems, $view . '/Create.vue');
+            FileService::replaceInFile('name: "",', DefaultText::$formInput, $view . '/Create.vue');
+            FileService::replaceInFile('inputsItem', DefaultText::$inputItems, $view . '/Edit.vue');
 
             // add route to web page
             FileService::replaceInFile('//don`t remove this lint', DefaultText::route($name), $router);
@@ -103,9 +112,9 @@ class DevelopmentController extends Controller
             FileService::replaceInFile('//don`t remove this lint', DefaultText::lang($name), $en);
 
             // replace table name
-            FileService::replaceInFile('basics', $smallName. "s", $migrate);
-
-
+            FileService::replaceInFile('basics', $smallName . "s", $migrate);
+            // set filed items
+            FileService::replaceInFile('$table->string("name");', DefaultText::$filedTable, $migrate);
         }
         // dd($name);
     }

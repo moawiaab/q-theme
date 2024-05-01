@@ -9,13 +9,14 @@ class UpdateBasicRequest extends FormRequest
 {
     public function authorize()
     {
-        return Gate::allows('user_edit');
+        // return FacadesGate::allows('user_create');
+        return true;
     }
 
     public function rules()
     {
         return [
-            'name' => ['required', 'string', 'max:255', 'min:5'],
+            'name' => [],
         ];
     }
 }

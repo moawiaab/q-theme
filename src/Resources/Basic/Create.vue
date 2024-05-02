@@ -58,6 +58,9 @@ import { useForm } from "@inertiajs/vue3";
 import { useSettings } from "@/stores/settings";
 import Layout from "../../Layouts/AppLayout.vue";
 defineOptions({ layout: Layout });
+defineProps({
+    //propsList
+})
 const setting = useSettings();
 setting.title = "input.user.title";
 setting.supTitle = "input.user.title_new";

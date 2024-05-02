@@ -74,7 +74,9 @@ import Layout from "../../Layouts/AppLayout.vue";
 defineOptions({ layout: Layout });
 const { rules: rulesData } = useForms();
 const rules = rulesData;
-const props = defineProps(["user"]);
+const props = defineProps({
+     //propsList
+});
 
 const form = useForm(props.user);
 

@@ -33,7 +33,9 @@ class BasicController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Basics/Create');
+        return Inertia::render('Basics/Create', [
+            //set resource
+        ]);
     }
 
     /**
@@ -69,6 +71,7 @@ class BasicController extends Controller
 
         return Inertia::render('Basics/Edit', [
             'basic' => $basic,
+            //set resource
         ]);
     }
 

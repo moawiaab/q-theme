@@ -5,6 +5,7 @@ namespace Moawiaab\QTheme\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Moawiaab\QTheme\Models\Permission;
 use Moawiaab\QTheme\Models\Role;
@@ -26,6 +27,7 @@ class DevelopmentController extends Controller
             'models'  => FileService::allFiles($models, "Controller"),
             'resources'  => FileService::allFiles($resources, "Controller"),
             'requests'  => FileService::allFiles($requests, "Controller"),
+            'tables'    => DB::select('SHOW TABLES IN jet_main_org WHERE Tables_in_jet_main_org NOT IN ("cache_locks", "cache", "failed_jobs", "job_batches", "jobs", "migrations", "permission_role", "password_reset_tokens", "permissions","sessions", "accounts", "roles","settings", "personal_access_tokens")')
         ]);
     }
 
@@ -69,6 +71,7 @@ class DevelopmentController extends Controller
             FileService::replaceInFile('Basic', $name, $model);
             FileService::replaceInFile('tablesName', $smallName . "s", $model);
             FileService::replaceInFile("'name',", DefaultText::$filedModel, $model);
+            FileService::replaceInFile("//function", DefaultText::$appModel, $model);
 
             //replace resource name
             FileService::replaceInFile('BasicResource', $name . "Resource", $resource);
@@ -84,6 +87,7 @@ class DevelopmentController extends Controller
             FileService::replaceInFile('basics', $smallName . 's', $controller);
             FileService::replaceInFile('$basic', '$' . $smallName, $controller);
             FileService::replaceInFile('Basic', $name, $controller);
+            FileService::replaceInFile('//set resource', DefaultText::$appModelList, $controller);
             // copy resources files in vue folder
             (new Filesystem)->copyDirectory(__DIR__ . '/../../Resources/Basic', $view);
             // views files index , create, update, show
@@ -95,7 +99,9 @@ class DevelopmentController extends Controller
             //set input to create and edit files
             FileService::replaceInFile('inputsItem', DefaultText::$inputItems, $view . '/Create.vue');
             FileService::replaceInFile('name: "",', DefaultText::$formInput, $view . '/Create.vue');
+            FileService::replaceInFile('//propsList', DefaultText::$props, $view . '/Create.vue');
             FileService::replaceInFile('inputsItem', DefaultText::$inputItems, $view . '/Edit.vue');
+            FileService::replaceInFile('//propsList', DefaultText::$propsEdit, $view . '/Edit.vue');
 
             // add route to web page
             FileService::replaceInFile('//don`t remove this lint', DefaultText::route($name), $router);

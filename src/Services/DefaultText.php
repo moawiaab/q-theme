@@ -11,12 +11,17 @@ class DefaultText
     public static $langText = "";
     public static $inputItems = "";
     public static $formInput = "";
+    public static $columnNames = "";
+    public static $appModelList = "";
+    public static $appModel = "";
+    public static $props = "";
+    public static $propsEdit = "";
 
-    protected static $string = array("string", "text", "tinyText", "longText");
+    protected static $string = array("string", "text", "tinyText", "longText", "phone");
     public static function column($column)
     {
         return "\n" . 'export const ' . $column . ' = [
-            { name: "name", required: true, label: "input.role.name", align: "left", field: "title" },
+            ' . self::$columnNames . '
             { name: "created_at", label: "g.created_at", field: "created_at", align: "left", sortable: true },
             { name: "options", label: "g.options", field: "options" }
             ]';
@@ -59,35 +64,68 @@ class DefaultText
 
     public static function items($items, $name)
     {
+        self::$propsEdit .= "'" . $name . "' : Object, " . "\n";
         foreach ($items as $item) {
+            $v = 'null';
             $filed = str_replace(' ', '', trim(strtolower($item['filed'])));
+
             $type = "string";
             $inputType = "text";
             if (in_array($item['type'], self::$string)) {
                 $type = "string";
-                $inputType = "text";
+                $inputType = $item['type'] == "phone" ? "phone" : "text";
+                $v = "'" . $item['value'] . "'" ?? 'null';
             } elseif ($item['type'] == 'boolean') {
                 $type = "boolean";
                 $inputType = "";
             } elseif ($item['type'] == 'decimal') {
                 $type = "numeric";
                 $inputType = "number";
+                $v = $item['value'] ?? 'null';
             } elseif ($item['type'] == 'date') {
                 $type = "date";
                 $inputType = "date";
+                $v = "'" . $item['value'] . "'" ?? 'null';
             } else {
                 $type = "integer";
                 $inputType = "number";
+                $v = $item['value'] ?? 'null';
             }
+
+            if ($item['type'] == 'longText') {
+                self::$inputItems .= self::editor($filed, $name);
+            } elseif ($item['type'] == 'belongsTo') {
+                $lists = trim($item['belongsTo']);
+                $model = substr_replace($lists, '', -1);
+
+                self::$props .= "'" . $lists . "' : Object, " . "\n";
+                self::$appModelList .= "'" . $lists . "'    => \App\Models\\" . ucfirst($model) . "::get(['id', 'name'])," . "\n";
+                self::$appModel .= 'public function ' . $filed . '() : BelongsTo
+                {
+                    return $this->belongsTo(' . ucfirst($model) . '::class);
+                }' . "\n";
+                $filed = $filed . "_id";
+                self::$inputItems .= self::select($name, $filed, $item['require'], $lists);
+            } else {
+                self::$inputItems .= self::input($name, $filed, $item['require'], $inputType);
+            }
+            $filedType = $item['type'] == "phone" ? "string" : $item['type'];
             $nullable = $item['require'] == false ? "->nullable();" : ";";
             $nullableReq = $item['require'] == false ? "nullable" : "required";
-            self::$filedTable .= '$table->' . $item['type'] . '("' . $filed . '")' . $nullable . "\n";
+
+            if ($item['type'] == 'belongsTo') {
+                self::$filedTable .= '$table->bigInteger("' . $filed . '")->references("id")->on("' . trim($item['belongsTo']) . '")' . $nullable . "\n";
+            } else {
+                self::$filedTable .= '$table->' . $filedType . '("' . $filed . '")' . $nullable . "\n";
+            }
             self::$filedModel .= "'" . $filed . "'," . "\n";
             self::$filedRequire .= "'" . $filed . "' => ['" . $type . "', '" . $nullableReq . "']," . "\n";
             self::$langText .= $filed . ': "' . ucfirst($item['name']) . '",' . "\n";
-            self::$inputItems .= self::input($name, $filed, $item['require'], $inputType);
+
             //!TODO: set default value
-            self::$formInput .= $filed . ": null,". "\n";
+
+            self::$formInput .= $filed . ": " . $v . "," . "\n";
+            self::$columnNames .= '{ name: "' . $filed . '", label: "input.' . $name . "." . $filed . '", align: "left", field: "' . $filed . '" },';
         }
     }
 
@@ -99,14 +137,44 @@ class DefaultText
             :error-message="form.errors.' . $filed . '"
             :error="form.errors.' . $filed . ' ? true : false"';
         } else {
-            $role = '';
+            $role = 'class="q-mb-md"';
         }
         return '<q-input
         clearable
         type="' . $type . '"
         filled
         v-model="form.' . $filed . '"
-        :label="$t(' . "'g." . $name . "." . $filed . "'" . ')"
+        :label="$t(' . "'input." . $name . "." . $filed . "'" . ')"
+       ' . $role . '
+      />' . "\n";
+    }
+
+    public static function editor($filed, $name)
+    {
+        return '<q-editor v-model="form.' . $filed . '" min-height="5rem"
+        :placeholder="' . "'input." . $name . "." . $filed . "'" . '"/>' . "\n";
+    }
+
+    public static function select($name, $filed, $bool, $lists)
+    {
+        if ($bool == true) {
+            $role = ' lazy-rules
+            :rules="[(val) => !!val || $t(' . "'v.required'" . ')]"
+            :error-message="form.errors.' . $filed . '"
+            :error="form.errors.' . $filed . ' ? true : false"';
+        } else {
+            $role = 'class="q-mb-md"';
+        }
+        return '<q-select
+        clearable
+        :options="' . $lists . '"
+        option-value="id"
+        option-label="name"
+        emit-value
+        map-options
+        filled
+        v-model="form.' . $filed . '"
+        :label="$t(' . "'input." . $name . "." . $filed . "'" . ')"
        ' . $role . '
       />' . "\n";
     }

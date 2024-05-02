@@ -4,6 +4,7 @@ import ECard from "@/Components/Widgets/ECard.vue";
 import { ref } from "vue";
 import { useForms } from "../../Composables/rules";
 import { useForm } from "@inertiajs/vue3";
+import { Notify } from "quasar";
 
 defineProps(["controllers", "models", "resources", "requests", "tables"]);
 defineOptions({
@@ -21,7 +22,7 @@ const item = ref({
 });
 
 const selectType = ref("text");
-const belongsTo = ref(false)
+const belongsTo = ref(false);
 const { rules: rulesData } = useForms();
 const rules = rulesData;
 const form = useForm({
@@ -42,18 +43,22 @@ const onSubmit = () => {
 };
 
 const addItem = () => {
-    form.items.push({
-        ...item.value,
-        filed: item.value.name,
-    });
-    item.value = {
-        name: null,
-        type: "text",
-        filed: "",
-        require: false,
-        value: null,
-        belongsTo: null,
-    };
+    if (item.value.name != null && item.value.name.length > 3) {
+        form.items.push({
+            ...item.value,
+            filed: item.value.name,
+        });
+        item.value = {
+            name: null,
+            type: "text",
+            filed: "",
+            require: false,
+            value: null,
+            belongsTo: null,
+        };
+    } else {
+        Notify.create("Set Column Name ");
+    }
 };
 
 const onReset = () => {
@@ -92,7 +97,6 @@ const setType = (type) => {
         type == "decimal" ||
         type == "tinyInteger" ||
         type == "smallInteger"
-
     ) {
         selectType.value = "number";
     } else if (type == "text" || type == "tinyText" || type == "longText") {
@@ -101,7 +105,7 @@ const setType = (type) => {
         selectType.value = "phone";
     } else if (type == "date") {
         selectType.value = "date";
-    } else if(type == "belongsTo") {
+    } else if (type == "belongsTo") {
         selectType.value = "belongsTo";
         belongsTo.value = true;
     }
@@ -149,7 +153,7 @@ const setType = (type) => {
                         text-color="green"
                         v-for="(item, i) in resources"
                         :key="i"
-                        >{{ item }}</q-chip
+                        >{{ item}}</q-chip
                     ></e-card
                 ><q-separator />
 

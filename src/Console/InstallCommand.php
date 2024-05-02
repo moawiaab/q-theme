@@ -14,6 +14,7 @@ use Illuminate\Support\Arr;
 
 use function Laravel\Prompts\multiselect;
 use function Laravel\Prompts\select;
+use function PHPUnit\Framework\directoryExists;
 
 class InstallCommand extends Command implements PromptsForMissingInput
 {
@@ -76,8 +77,10 @@ class InstallCommand extends Command implements PromptsForMissingInput
 
             (new Filesystem)->copyDirectory(__DIR__ . '/../Http/Requests', app_path('Http/Requests'));
             // (new Filesystem)->copyDirectory(__DIR__ . '/../Http/Resources/Resources', app_path('Http/Resources'));
-            mkdir(app_path('Http/Resources'));
 
+            if (!directoryExists(app_path('Http/Resources'))) {
+                mkdir(app_path('Http/Resources'));
+            }
             (new Filesystem)->copyDirectory(__DIR__ . '/../../stubs/views', resource_path('views'));
 
             // copy(__DIR__ . '/../Providers/RouteServiceProvider.php', app_path('Providers/RouteServiceProvider.php'));
@@ -292,17 +295,17 @@ class InstallCommand extends Command implements PromptsForMissingInput
         $bootstrapApp = file_get_contents(base_path('bootstrap/app.php'));
 
         $names = collect(Arr::wrap($names))
-            ->filter(fn ($name) => ! Str::contains($bootstrapApp, $name))
+            ->filter(fn ($name) => !Str::contains($bootstrapApp, $name))
             ->whenNotEmpty(function ($names) use ($bootstrapApp, $group, $modifier) {
-                $names = $names->map(fn ($name) => "$name")->implode(','.PHP_EOL.'            ');
+                $names = $names->map(fn ($name) => "$name")->implode(',' . PHP_EOL . '            ');
 
                 $bootstrapApp = str_replace(
                     '->withMiddleware(function (Middleware $middleware) {',
                     '->withMiddleware(function (Middleware $middleware) {'
-                        .PHP_EOL."        \$middleware->$group($modifier: ["
-                        .PHP_EOL."            $names,"
-                        .PHP_EOL.'        ]);'
-                        .PHP_EOL,
+                        . PHP_EOL . "        \$middleware->$group($modifier: ["
+                        . PHP_EOL . "            $names,"
+                        . PHP_EOL . '        ]);'
+                        . PHP_EOL,
                     $bootstrapApp,
                 );
 
@@ -349,8 +352,5 @@ class InstallCommand extends Command implements PromptsForMissingInput
                 fn ($options) => $options->put('lang', 'Select Arabic language')
             )->sort()->sort()->all(),
         ))->each(fn ($option) => $input->setOption($option, true));
-
     }
-
-
 }

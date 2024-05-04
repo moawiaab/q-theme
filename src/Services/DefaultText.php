@@ -92,8 +92,19 @@ class DefaultText
                 $v = $item['value'] ?? 'null';
             }
 
+            self::$columnNames .= '{ name: "' . $filed . '", label: "input.' . $name . "." . $filed . '", align: "left", field: "' . $filed . '",';
+
             if ($item['type'] == 'longText') {
                 self::$inputItems .= self::editor($filed, $name);
+                self::$columnNames .= 'format: (val: any) =>
+                `${
+                    val.replace(/(<([^>]+)>)/gi, "").length > 30
+                        ? val
+                              .replace(/(<([^>]+)>)/gi, "")
+                              .split("", 30)
+                              .join("") + "..."
+                        : val.replace(/(<([^>]+)>)/gi, "")
+                }`,';
             } elseif ($item['type'] == 'belongsTo') {
                 $lists = trim($item['belongsTo']);
                 $model = substr_replace($lists, '', -1);
@@ -122,10 +133,8 @@ class DefaultText
             self::$filedRequire .= "'" . $filed . "' => ['" . $type . "', '" . $nullableReq . "']," . "\n";
             self::$langText .= $filed . ': "' . ucfirst($item['name']) . '",' . "\n";
 
-            //!TODO: set default value
-
+            self::$columnNames .= '},' . "\n";
             self::$formInput .= $filed . ": " . $v . "," . "\n";
-            self::$columnNames .= '{ name: "' . $filed . '", label: "input.' . $name . "." . $filed . '", align: "left", field: "' . $filed . '" },';
         }
     }
 

@@ -43,7 +43,7 @@ const onSubmit = () => {
 };
 
 const addItem = () => {
-    if (item.value.name != null && item.value.name.length > 3) {
+    if (item.value.name != null && item.value.name.length > 1) {
         form.items.push({
             ...item.value,
             filed: item.value.name,

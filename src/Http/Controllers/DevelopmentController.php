@@ -87,6 +87,7 @@ class DevelopmentController extends Controller
             FileService::replaceInFile('basics', $smallName . 's', $controller);
             FileService::replaceInFile('$basic', '$' . $smallName, $controller);
             FileService::replaceInFile('Basic', $name, $controller);
+            FileService::replaceInFile('basic', $smallName, $controller);
             FileService::replaceInFile('//set resource', DefaultText::$appModelList, $controller);
             // copy resources files in vue folder
             (new Filesystem)->copyDirectory(__DIR__ . '/../../Resources/Basic', $view);

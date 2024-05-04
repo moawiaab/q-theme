@@ -78,7 +78,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
             (new Filesystem)->copyDirectory(__DIR__ . '/../Http/Requests', app_path('Http/Requests'));
             // (new Filesystem)->copyDirectory(__DIR__ . '/../Http/Resources/Resources', app_path('Http/Resources'));
 
-            if (!directoryExists(app_path('Http/Resources'))) {
+            if (!is_dir(app_path('Http/Resources'))) {
                 mkdir(app_path('Http/Resources'));
             }
             (new Filesystem)->copyDirectory(__DIR__ . '/../../stubs/views', resource_path('views'));

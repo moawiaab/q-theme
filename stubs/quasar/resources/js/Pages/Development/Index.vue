@@ -1,6 +1,8 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import ECard from "@/Components/Widgets/ECard.vue";
+import OneForm from "@/Components/form/OneForm.vue";
+import TableForm from "./TableForm.vue";
 import { ref } from "vue";
 import { useForms } from "../../Composables/rules";
 import { useForm } from "@inertiajs/vue3";
@@ -11,6 +13,7 @@ defineOptions({
     layout: AppLayout,
 });
 const splitterModel = ref(30);
+const tab = ref("controller");
 const item = ref({
     name: null,
     type: "text",
@@ -28,15 +31,28 @@ const rules = rulesData;
 const form = useForm({
     controller: "",
     items: [],
-    model: true,
-    resource: false,
-    request: false,
+    tab: "controller",
 });
 
 const onSubmit = () => {
     form.post(route("development.store"), {
         preserveState: true,
         onFinish: () => form.reset(),
+        onSuccess: () => Notify.create("Create Successfully", {
+            color: 'secondary'
+        }),
+    });
+
+    console.log(form.errors);
+};
+
+const submittedData = () => {
+    form.post(route("development.storeModel"), {
+        preserveState: true,
+        onFinish: () => form.reset(),
+        onSuccess: () => Notify.create("Create Successfully", {
+            color: 'secondary'
+        }),
     });
 
     console.log(form.errors);
@@ -110,6 +126,14 @@ const setType = (type) => {
         belongsTo.value = true;
     }
 };
+
+const ucFirst = (str) => {
+    if (!str) return str;
+    return (
+        str[0].toUpperCase() +
+        str.slice(1).split(" ").join("").trim().toLowerCase()
+    );
+};
 </script>
 
 <template>
@@ -153,7 +177,7 @@ const setType = (type) => {
                         text-color="green"
                         v-for="(item, i) in resources"
                         :key="i"
-                        >{{ item}}</q-chip
+                        >{{ item }}</q-chip
                     ></e-card
                 ><q-separator />
 
@@ -181,140 +205,293 @@ const setType = (type) => {
             </template>
 
             <template v-slot:after>
-                <div class="q-ma-md">
-                    <q-form
-                        @submit="onSubmit"
-                        @reset="onReset"
-                        class="q-gutter-md"
+                <q-card>
+                    <q-tabs
+                        v-model="form.tab"
+                        dense
+                        inline-label
+                        align="justify"
+                        class="text-primary shadow-2"
+                        :breakpoint="0"
                     >
-                        <q-input
-                            clearable
-                            filled
-                            v-model="form.controller"
-                            label="Controller Name"
-                            hint="If You Like Set UserController Entre User Only"
-                            lazy-rules
-                            :rules="[(val) => !!val || $t('v.required')]"
-                            :error-message="form.errors.controller"
-                            :error="form.errors.controller ? true : false"
+                        <q-tab
+                            name="controller"
+                            icon="mdi-gamepad-variant-outline"
+                            label="Controllers"
                         />
-                        <div class="text-gary">
-                            1- Controller , 2- Model , 3- Resource , 4- Require
-                        </div>
+                        <q-tab
+                            name="model"
+                            icon="mdi-database-refresh-outline"
+                            label="Models"
+                        />
+                        <q-tab
+                            name="resource"
+                            icon="mdi-dresser-outline"
+                            label="Resources"
+                        />
+                        <q-tab
+                            name="request"
+                            icon="mdi-tune-vertical"
+                            label="Requests"
+                        />
+                    </q-tabs>
 
-                        <q-separator />
-                        <div class="row">
-                            <div class="col q-px-sm">
+                    <q-tab-panels v-model="form.tab" animated>
+                        <q-tab-panel name="controller">
+                            <div class="q-ma-md">
+                                <q-form
+                                    @submit="onSubmit"
+                                    @reset="onReset"
+                                    class="q-gutter-md"
+                                >
+                                    <q-input
+                                        clearable
+                                        filled
+                                        v-model="form.controller"
+                                        label="Controller Name"
+                                        hint="If You Like Set UserController Entre User Only"
+                                        lazy-rules
+                                        :rules="[
+                                            (val) => !!val || $t('v.required'),
+                                        ]"
+                                        :error-message="form.errors.controller"
+                                        :error="
+                                            form.errors.controller
+                                                ? true
+                                                : false
+                                        "
+                                    />
+                                    <div class="text-gary">
+                                        Controller :
+                                        {{ ucFirst(form.controller) }}Controller
+                                    </div>
+                                    <div class="">
+                                        Model : {{ ucFirst(form.controller) }}
+                                    </div>
+                                    <div class="">
+                                        Resource :
+                                        {{ ucFirst(form.controller) }}Resource
+                                    </div>
+                                    <div class="">
+                                        Require :
+                                        {{ ucFirst(form.controller) }}Require
+                                    </div>
+
+                                    <q-separator />
+                                    <div class="row">
+                                        <div class="col q-px-sm">
+                                            <q-input
+                                                dense
+                                                clearable
+                                                filled
+                                                v-model="item.name"
+                                                label="Column Name"
+                                            >
+                                            </q-input>
+                                        </div>
+                                        <div class="col q-px-sm">
+                                            <q-select
+                                                filled
+                                                v-model="item.type"
+                                                :options="options"
+                                                dense=""
+                                                @update:model-value="setType"
+                                            />
+                                        </div>
+                                        <div class="col q-px-sm">
+                                            <q-input
+                                                :type="selectType"
+                                                dense
+                                                clearable
+                                                filled
+                                                v-model="item.value"
+                                                label="Default value"
+                                            >
+                                                <template #after>
+                                                    <q-btn
+                                                        flat
+                                                        icon="add"
+                                                        @click="addItem"
+                                                    />
+                                                </template>
+                                            </q-input>
+                                        </div>
+                                    </div>
+
+                                    <table-form
+                                        :columns="columns"
+                                        :rows="form.items"
+                                        :belongsTo="belongsTo"
+                                    >
+                                        <template #select>
+                                            <q-select
+                                                filled
+                                                v-model="item.belongsTo"
+                                                :options="tables"
+                                                dense
+                                                emit-value
+                                                option-value="Tables_in_jet_main_org"
+                                                option-label="Tables_in_jet_main_org"
+                                            />
+                                        </template>
+                                    </table-form>
+                                    <q-separator />
+                                    <q-btn
+                                        class="full-width"
+                                        :label="$t('g.save')"
+                                        type="submit"
+                                        color="primary"
+                                        :loading="form.processing"
+                                    />
+                                </q-form>
+                            </div>
+                        </q-tab-panel>
+                        <q-tab-panel name="model">
+                            <one-form @submitted="submittedData">
                                 <q-input
-                                    dense
                                     clearable
                                     filled
-                                    v-model="item.name"
-                                    label="Column Name"
-                                >
-                                </q-input>
-                            </div>
-                            <div class="col q-px-sm">
-                                <q-select
-                                    filled
-                                    v-model="item.type"
-                                    :options="options"
-                                    dense=""
-                                    @update:model-value="setType"
+                                    v-model="form.controller"
+                                    label="Model Name"
+                                    lazy-rules
+                                    :rules="[
+                                        (val) => !!val || $t('v.required'),
+                                    ]"
+                                    :error-message="form.errors.controller"
+                                    :error="
+                                        form.errors.controller ? true : false
+                                    "
                                 />
-                            </div>
-                            <div class="col q-px-sm">
-                                <q-input
-                                    :type="selectType"
-                                    dense
-                                    clearable
-                                    filled
-                                    v-model="item.value"
-                                    label="Default value"
+
+                                <div class="row q-mb-md">
+                                    <div class="col q-pr-sm">
+                                        <q-input
+                                            dense
+                                            clearable
+                                            filled
+                                            v-model="item.name"
+                                            label="Column Name"
+                                        >
+                                        </q-input>
+                                    </div>
+                                    <div class="col q-px-sm">
+                                        <q-select
+                                            filled
+                                            v-model="item.type"
+                                            :options="options"
+                                            dense=""
+                                            @update:model-value="setType"
+                                        />
+                                    </div>
+                                    <div class="col q-px-sm">
+                                        <q-input
+                                            :type="selectType"
+                                            dense
+                                            clearable
+                                            filled
+                                            v-model="item.value"
+                                            label="Default value"
+                                        >
+                                            <template #after>
+                                                <q-btn
+                                                    flat
+                                                    icon="add"
+                                                    @click="addItem"
+                                                />
+                                            </template>
+                                        </q-input>
+                                    </div>
+                                </div>
+
+                                <table-form
+                                    :columns="columns"
+                                    :rows="form.items"
+                                    :belongsTo="belongsTo"
                                 >
-                                    <template #after>
-                                        <q-btn
-                                            flat
-                                            icon="add"
-                                            @click="addItem"
+                                    <template #select>
+                                        <q-select
+                                            filled
+                                            v-model="item.belongsTo"
+                                            :options="tables"
+                                            dense
+                                            emit-value
+                                            option-value="Tables_in_jet_main_org"
+                                            option-label="Tables_in_jet_main_org"
                                         />
                                     </template>
-                                </q-input>
-                            </div>
-                        </div>
+                                </table-form>
 
-                        <div class="row" v-if="belongsTo">
-                            <div class="col q-px-sm">
-                                <q-select
-                                    filled
-                                    v-model="item.belongsTo"
-                                    :options="tables"
-                                    dense
-                                    emit-value
-                                    option-value="Tables_in_jet_main_org"
-                                    option-label="Tables_in_jet_main_org"
+                                <q-btn
+                                    class="full-width q-mt-md"
+                                    label="create a new model only"
+                                    type="submit"
+                                    color="red"
+                                    :loading="form.processing"
                                 />
-                            </div>
-                            <div class="col q-px-sm">
+                            </one-form>
+                        </q-tab-panel>
+                        <q-tab-panel name="resource">
+                            <one-form @submitted="submittedData">
                                 <q-input
-                                    dense
                                     clearable
                                     filled
-                                    disable
-                                    label="id"
-                                >
-                                </q-input>
-                            </div>
-                        </div>
-                        <q-separator />
+                                    v-model="form.controller"
+                                    label="Resource Name"
+                                    lazy-rules
+                                    :rules="[
+                                        (val) => !!val || $t('v.required'),
+                                    ]"
+                                    :error-message="form.errors.controller"
+                                    :error="
+                                        form.errors.controller ? true : false
+                                    "
+                                />
 
-                        <q-table
-                            :rows="form.items"
-                            :columns="columns"
-                            title="Default Field is : | id | user_id | account_id "
-                            :rows-per-page-options="[]"
-                            row-key="name"
-                        >
-                            <template v-slot:body="props">
-                                <q-tr :props="props">
-                                    <q-td key="name" :props="props">
-                                        {{ props.row.name }}
-                                    </q-td>
-                                    <q-td key="filed" :props="props">
-                                        <q-input
-                                            outlined=""
-                                            v-model="props.row.filed"
-                                            dense
-                                            autofocus
-                                        />
-                                    </q-td>
-                                    <q-td key="type" :props="props">
-                                        {{ props.row.type }}
-                                    </q-td>
+                                <div class="">
+                                    Resource :
+                                    {{ ucFirst(form.controller) }}Resource
+                                </div>
 
-                                    <q-td key="value" :props="props">
-                                        {{ props.row.value || "-" }}
-                                    </q-td>
-
-                                    <q-td key="require" :props="props">
-                                        <q-checkbox
-                                            v-model="props.row.require"
-                                        />
-                                    </q-td>
-                                </q-tr>
-                            </template>
-                        </q-table>
-
-                        <q-separator />
-                        <q-btn
-                            class="full-width"
-                            :label="$t('g.save')"
-                            type="submit"
-                            color="primary"
-                            :loading="form.loading"
-                        />
-                    </q-form>
-                </div>
+                                <q-btn
+                                    class="full-width q-mt-md"
+                                    label="create a new resource only"
+                                    type="submit"
+                                    color="red"
+                                    :loading="form.processing"
+                                />
+                            </one-form>
+                        </q-tab-panel>
+                        <q-tab-panel name="request">
+                            <one-form @submitted="submittedData">
+                                <q-input
+                                    clearable
+                                    filled
+                                    v-model="form.controller"
+                                    label="Request Name"
+                                    lazy-rules
+                                    :rules="[
+                                        (val) => !!val || $t('v.required'),
+                                    ]"
+                                    :error-message="form.errors.controller"
+                                    :error="
+                                        form.errors.controller ? true : false
+                                    "
+                                />
+                                <div class="">
+                                    Require :
+                                    {{ ucFirst(form.controller) }}Require
+                                </div>
+                                <q-btn
+                                    class="full-width q-mt-md"
+                                    label="create a new request only"
+                                    type="submit"
+                                    color="red"
+                                    :loading="form.processing"
+                                />
+                            </one-form>
+                        </q-tab-panel>
+                    </q-tab-panels>
+                </q-card>
             </template>
         </q-splitter>
     </q-page>

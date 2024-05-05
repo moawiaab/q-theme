@@ -44,7 +44,6 @@ const submit = () => {
             </div>
             <q-form @submit="submit" @reset="form.reset()" class="q-gutter-md">
                 <q-input
-                color="white"
                     filled
                     clearable
                     v-model="form.email"
@@ -61,7 +60,6 @@ const submit = () => {
                 </q-input>
 
                 <q-input
-                color="white"
                     filled
                     :type="locker ? 'password' : 'text'"
                     v-model="form.password"

@@ -144,4 +144,53 @@ class DevelopmentController extends Controller
             }
         }
     }
+
+
+    public function storeModel(Request $request)
+    {
+        // small name
+        $smallName = str_replace(' ', '', trim(strtolower($request->controller)));
+        DefaultText::items($request->items, $smallName);
+        $name = ucfirst($smallName);
+
+        $model = app_path('Models/' . $name . '.php');
+        $resource = app_path('Http/Resources/' . $name . 'Resource.php');
+        $storeR = app_path('Http/Requests/Store' . $name . 'Request.php');
+        $updateR = app_path('Http/Requests/Update' . $name . 'Request.php');
+
+        //migrations
+        $m_name = date("Y-m-d") . "_" . time() . "_" . "create_" . $smallName . "_table.php";
+        $migrate = database_path("migrations/" . $m_name);
+
+        if ($request->tab == "model") {
+            copy(__DIR__ . '/../../Resources/database/basic.php', $migrate);
+            copy(__DIR__ . '/../../Models/Basic.php', $model);
+
+            //replace model name
+            FileService::replaceInFile('Basic', $name, $model);
+            FileService::replaceInFile('tablesName', $smallName . "s", $model);
+            FileService::replaceInFile("'name',", DefaultText::$filedModel, $model);
+            FileService::replaceInFile("//function", DefaultText::$appModel, $model);
+
+
+            // replace table name
+            FileService::replaceInFile('basics', $smallName . "s", $migrate);
+            // set filed items
+            FileService::replaceInFile('$table->string("name");', DefaultText::$filedTable, $migrate);
+        } else if ($request->tab == "resource") {
+            copy(__DIR__ . '/../Resources/BasicResource.php', $resource);
+            //replace resource name
+            FileService::replaceInFile('BasicResource', $name . "Resource", $resource);
+        } else if ($request->tab == "request") {
+            copy(__DIR__ . '/../Requests/StoreBasicRequest.php', $storeR);
+            copy(__DIR__ . '/../Requests/UpdateBasicRequest.php', $updateR);
+            //replace resource name
+            FileService::replaceInFile('BasicResource', $name . "Resource", $resource);
+            //replace request name
+            FileService::replaceInFile('StoreBasicRequest', 'Store' . $name . "Request", $storeR);
+            FileService::replaceInFile("'name' => [],", DefaultText::$filedRequire, $storeR);
+            FileService::replaceInFile('UpdateBasicRequest', 'Update' . $name . "Request", $updateR);
+            FileService::replaceInFile("'name' => [],", DefaultText::$filedRequire, $updateR);
+        }
+    }
 }

@@ -44,6 +44,7 @@ Route::middleware([
 
     Route::get('/development', [DevelopmentController::class, "index"])->name('development.index');
     Route::post('/development', [DevelopmentController::class, "store"])->name('development.store');
+    Route::post('/development', [DevelopmentController::class, "storeModel"])->name('development.storeModel');
 
 
      //don`t remove this lint

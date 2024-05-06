@@ -27,7 +27,7 @@ class DevelopmentController extends Controller
             'models'  => FileService::allFiles($models, "Controller"),
             'resources'  => FileService::allFiles($resources, "Controller"),
             'requests'  => FileService::allFiles($requests, "Controller"),
-            'tables'    => DB::select('SHOW TABLES IN jet_main_org WHERE Tables_in_jet_main_org NOT IN ("cache_locks", "cache", "failed_jobs", "job_batches", "jobs", "migrations", "permission_role", "password_reset_tokens", "permissions","sessions", "accounts", "roles","settings", "personal_access_tokens")')
+            'tables'    => DB::select('SHOW TABLES IN '.env('DB_DATABASE').' WHERE Tables_in_'.env('DB_DATABASE').' NOT IN ("cache_locks", "cache", "failed_jobs", "job_batches", "jobs", "migrations", "permission_role", "password_reset_tokens", "permissions","sessions", "accounts", "roles","settings", "personal_access_tokens")')
         ]);
     }
 
